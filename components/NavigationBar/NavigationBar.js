@@ -151,7 +151,7 @@ export default class NavigationBar extends Component {
     if (!statusBarStyle) statusBarStyle = Theme.navStatusBarStyle ? Theme.navStatusBarStyle : 'default';
     
     // iOS browser do not need a StatusBar.
-    if (Theme.isIOSWeb && !Theme.isIOSWebInAPP) {
+    if (Theme.isIOSWeb && !Theme.isWebInAPP) {
       return null;
     }
     else {
