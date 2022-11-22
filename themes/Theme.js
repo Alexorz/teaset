@@ -94,6 +94,20 @@ const Theme = {
     Object.assign(this, theme);
   },
 
+  phoneSizedWindowMaxWidth: 812,
+  get isPhoneSizedWindow(){
+    return Dimensions.get('window').width <= this.phoneSizedWindowMaxWidth;
+  },
+
+  padSizedWindowMaxWidth: 1200,
+  get isPadSizedWindow(){
+    return Dimensions.get('window').width <= this.padSizedWindowMaxWidth;
+  },
+
+  get isDesktopSizedWindow(){
+    return Dimensions.get('window').width > this.padSizedWindowMaxWidth;
+  },
+
   isIOSWeb: isIPhoneWeb || isIPadWeb,
   isIOSWebInAPP: false,
   isIPhoneWeb,
