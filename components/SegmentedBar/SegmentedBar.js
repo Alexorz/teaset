@@ -4,7 +4,7 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {View, ScrollView, TouchableOpacity, Animated, ViewPropTypes} from 'react-native';
+import {View, ScrollView, TouchableOpacity, Animated, ViewPropTypes, I18nManager} from 'react-native';
 
 import Theme from 'teaset/themes/Theme';
 import SegmentedItem from './SegmentedItem';
@@ -82,16 +82,35 @@ export default class SegmentedBar extends Component {
   }
 
   get indicatorXValue() {
-    switch (this.props.indicatorType) {
-      case 'boxWidth':
-        return this._buttonsLayout[this._activeIndex].x;
-      case 'itemWidth':
-        return this._buttonsLayout[this._activeIndex].x + this._itemsLayout[this._activeIndex].x + this._itemsAddWidth[this._activeIndex] / 2;
-      case 'customWidth':
-        const isMoreThanDefault = this.props.indicatorWidth > this._itemsLayout[this.activeIndex].width;
-        return isMoreThanDefault ?
-          this._buttonsLayout[this._activeIndex].x + this._itemsLayout[this._activeIndex].x
-          : this._buttonsLayout[this._activeIndex].x + (this._buttonsLayout[this._activeIndex].width - this.props.indicatorWidth) / 2;
+    // For RTL
+    if (I18nManager.isRTL) {
+      let contextWidth = 0;
+      this._buttonsLayout.map(item => contextWidth += item.width);
+
+      switch (this.props.indicatorType) {
+        case 'boxWidth':
+          return contextWidth - this._buttonsLayout[this._activeIndex].x - this._buttonsLayout[this._activeIndex].width;
+        case 'itemWidth':
+          return contextWidth - (this._buttonsLayout[this._activeIndex].x + this._itemsLayout[this._activeIndex].width + this._itemsLayout[this._activeIndex].x + this._itemsAddWidth[this._activeIndex] / 2);
+        case 'customWidth':
+          const isMoreThanDefault = this.props.indicatorWidth > this._itemsLayout[this.activeIndex].width;
+          return isMoreThanDefault 
+          ? contextWidth - this._buttonsLayout[this._activeIndex].x - this._itemsLayout[this._activeIndex].x - this._itemsLayout[this._activeIndex].width
+            : contextWidth - this._buttonsLayout[this._activeIndex].x - (this._buttonsLayout[this._activeIndex].width + this.props.indicatorWidth) / 2;
+      }
+    }
+    else {
+      switch (this.props.indicatorType) {
+        case 'boxWidth':
+          return this._buttonsLayout[this._activeIndex].x;
+        case 'itemWidth':
+          return this._buttonsLayout[this._activeIndex].x + this._itemsLayout[this._activeIndex].x + this._itemsAddWidth[this._activeIndex] / 2;
+        case 'customWidth':
+          const isMoreThanDefault = this.props.indicatorWidth > this._itemsLayout[this.activeIndex].width;
+          return isMoreThanDefault ?
+            this._buttonsLayout[this._activeIndex].x + this._itemsLayout[this._activeIndex].x
+            : this._buttonsLayout[this._activeIndex].x + (this._buttonsLayout[this._activeIndex].width - this.props.indicatorWidth) / 2;
+      }
     }
     return 0;
   }
