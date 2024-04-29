@@ -4,7 +4,7 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {View, ScrollView, TouchableOpacity, Animated, ViewPropTypes, I18nManager} from 'react-native';
+import {View, ScrollView, TouchableOpacity, Animated, ViewPropTypes, I18nManager, Platform} from 'react-native';
 
 import Theme from 'teaset/themes/Theme';
 import SegmentedItem from './SegmentedItem';
@@ -172,7 +172,15 @@ export default class SegmentedBar extends Component {
     if (this.props.autoScroll && this.refs.scrollView) {
       let contextWidth = 0;
       this._buttonsLayout.map(item => contextWidth += item.width);
-      let x = indicatorXValue + indicatorWidthValue / 2 - this._scrollViewWidth / 2;
+      
+      // For android RTL scroll direction
+      let x = 0;
+      if (I18nManager.isRTL && Platform.OS == 'android') {
+        x = contextWidth - indicatorXValue - indicatorWidthValue / 2 - this._scrollViewWidth / 2;
+      } else {
+        x = indicatorXValue + indicatorWidthValue / 2 - this._scrollViewWidth / 2;
+      }
+
       if (x < 0) {
         x = 0;
       } else if (x > contextWidth - this._scrollViewWidth) {
